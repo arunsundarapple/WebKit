@@ -36,6 +36,7 @@ class PlatformCALayerRemoteCustom final : public PlatformCALayerRemote {
     friend class PlatformCALayerRemote;
 public:
     static Ref<PlatformCALayerRemote> create(PlatformLayer *, WebCore::PlatformCALayerClient*, RemoteLayerTreeContext&);
+    static Ref<PlatformCALayerRemote> create(uint32_t, WebCore::PlatformCALayerClient*, RemoteLayerTreeContext&, std::optional<WebCore::MediaPlayerIdentifier>, WebCore::FloatSize);
 
     virtual ~PlatformCALayerRemoteCustom();
 
@@ -48,6 +49,7 @@ public:
 
 private:
     PlatformCALayerRemoteCustom(WebCore::PlatformCALayer::LayerType, PlatformLayer *, WebCore::PlatformCALayerClient* owner, RemoteLayerTreeContext&);
+    PlatformCALayerRemoteCustom(uint32_t, WebCore::PlatformCALayerClient* owner, RemoteLayerTreeContext&, std::optional<WebCore::MediaPlayerIdentifier>);
 
     Ref<WebCore::PlatformCALayer> clone(WebCore::PlatformCALayerClient* owner) const override;
     

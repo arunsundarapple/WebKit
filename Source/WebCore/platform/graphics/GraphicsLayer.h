@@ -41,6 +41,8 @@
 #include "ScrollTypes.h"
 #include "TimingFunction.h"
 #include "TransformOperations.h"
+#include <WebCore/MediaPlayerIdentifier.h>
+#include <WebCore/FloatSize.h>
 #include "WindRule.h"
 #include <wtf/EnumTraits.h>
 #include <wtf/Function.h>
@@ -70,7 +72,7 @@ class TransformationMatrix;
 namespace DisplayList {
 enum class AsTextFlag : uint8_t;
 }
-
+using LayerHostingContextID = uint32_t;
 // Base class for animation values (also used for transitions). Here to
 // represent values for properties being animated via the GraphicsLayer,
 // without pulling in style-related data from outside of the platform directory.
@@ -259,7 +261,14 @@ public:
         ScrolledContents,
         Shape
     };
+    
+    enum class LayerMode : uint8_t {
+        PlatformLayer,
+        LayerHostingContextId
+    };
 
+    virtual LayerMode layerMode() const { return LayerMode::PlatformLayer; }
+    
     WEBCORE_EXPORT static Ref<GraphicsLayer> create(GraphicsLayerFactory*, GraphicsLayerClient&, Type = Type::Normal);
     
     WEBCORE_EXPORT virtual ~GraphicsLayer();
@@ -520,6 +529,7 @@ public:
     // Pass an invalid color to remove the contents layer.
     virtual void setContentsToSolidColor(const Color&) { }
     virtual void setContentsToPlatformLayer(PlatformLayer*, ContentsLayerPurpose) { }
+    virtual void setContentsToHostingContextID(uint32_t, ContentsLayerPurpose, std::optional<WebCore::MediaPlayerIdentifier>, WebCore::FloatSize) { }
     virtual void setContentsDisplayDelegate(RefPtr<GraphicsLayerContentsDisplayDelegate>&&, ContentsLayerPurpose);
     WEBCORE_EXPORT virtual RefPtr<GraphicsLayerAsyncContentsDisplayDelegate> createAsyncContentsDisplayDelegate();
 #if ENABLE(MODEL_ELEMENT)
@@ -782,6 +792,7 @@ protected:
     WindRule m_shapeLayerWindRule { WindRule::NonZero };
     Path m_shapeLayerPath;
 #endif
+    LayerHostingContextID m_layerHostingContextID { 0 };
 };
 
 WEBCORE_EXPORT WTF::TextStream& operator<<(WTF::TextStream&, const WebCore::GraphicsLayerPaintingPhase);

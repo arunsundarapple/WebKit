@@ -31,6 +31,8 @@
 #include <WebCore/GraphicsLayerFactory.h>
 #include <WebCore/LayerPool.h>
 #include <WebCore/PlatformCALayer.h>
+#include <WebCore/MediaPlayerIdentifier.h>
+#include <WebCore/FloatSize.h>
 #include <wtf/Vector.h>
 
 namespace WebKit {
@@ -47,6 +49,7 @@ public:
     ~RemoteLayerTreeContext();
 
     void layerDidEnterContext(PlatformCALayerRemote&, WebCore::PlatformCALayer::LayerType);
+    void layerDidEnterContext(PlatformCALayerRemote&, WebCore::PlatformCALayer::LayerType, std::optional<WebCore::MediaPlayerIdentifier>, WebCore::FloatSize);
     void layerWillLeaveContext(PlatformCALayerRemote&);
 
     void graphicsLayerDidEnterContext(GraphicsLayerCARemote&);

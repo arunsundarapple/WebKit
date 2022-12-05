@@ -27,6 +27,7 @@
 
 #include <WebCore/GraphicsLayerCA.h>
 #include <WebCore/PlatformLayer.h>
+#include <WebCore/MediaPlayerIdentifier.h>
 
 namespace WebKit {
 
@@ -41,7 +42,8 @@ public:
 
     void moveToContext(RemoteLayerTreeContext&);
     void clearContext() { m_context = nullptr; }
-
+    LayerMode layerMode() const final;
+    
 private:
     bool isGraphicsLayerCARemote() const override { return true; }
 
@@ -50,6 +52,7 @@ private:
 #if ENABLE(MODEL_ELEMENT)
     Ref<WebCore::PlatformCALayer> createPlatformCALayer(Ref<WebCore::Model>, WebCore::PlatformCALayerClient* owner) override;
 #endif
+    Ref<WebCore::PlatformCALayer> createPlatformCALayer(uint32_t, WebCore::PlatformCALayerClient* owner, std::optional<WebCore::MediaPlayerIdentifier>, WebCore::FloatSize) override;
     Ref<WebCore::PlatformCAAnimation> createPlatformCAAnimation(WebCore::PlatformCAAnimation::AnimationType, const String& keyPath) override;
 
     // PlatformCALayerRemote can't currently proxy directly composited image contents, so opt out of this optimization.

@@ -516,6 +516,7 @@ void RemoteLayerBackingStore::drawInContext(GraphicsContext& context)
 #if ENABLE(MODEL_ELEMENT)
     case PlatformCALayer::LayerTypeModelLayer:
 #endif
+    case WebCore::PlatformCALayer::LayerTypeRemoteHostingTransportLayer:
     case PlatformCALayer::LayerTypeCustom:
         ASSERT_NOT_REACHED();
         break;

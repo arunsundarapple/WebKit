@@ -78,6 +78,11 @@ Ref<PlatformCALayer> GraphicsLayerCARemote::createPlatformCALayer(Ref<WebCore::M
 }
 #endif
 
+Ref<PlatformCALayer> GraphicsLayerCARemote::createPlatformCALayer(uint32_t contextID, PlatformCALayerClient* owner, std::optional<WebCore::MediaPlayerIdentifier> playerID, WebCore::FloatSize naturalSize)
+{
+    return PlatformCALayerRemote::create(contextID, owner, *m_context, playerID, naturalSize);
+}
+
 Ref<PlatformCAAnimation> GraphicsLayerCARemote::createPlatformCAAnimation(PlatformCAAnimation::AnimationType type, const String& keyPath)
 {
     return PlatformCAAnimationRemote::create(type, keyPath);
@@ -135,5 +140,11 @@ RefPtr<WebCore::GraphicsLayerAsyncContentsDisplayDelegate> GraphicsLayerCARemote
     return adoptRef(new GraphicsLayerCARemoteAsyncContentsDisplayDelegate(*WebProcess::singleton().parentProcessConnection(), m_context->drawingAreaIdentifier(), primaryLayerID()));
 }
 
+GraphicsLayer::LayerMode GraphicsLayerCARemote::layerMode() const
+{
+    if (m_context->layerHostingMode() == LayerHostingMode::InProcess)
+         return GraphicsLayer::LayerMode::PlatformLayer;
+    return GraphicsLayer::LayerMode::LayerHostingContextId;
+}
 
 } // namespace WebKit

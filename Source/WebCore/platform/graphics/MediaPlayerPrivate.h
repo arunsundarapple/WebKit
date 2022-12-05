@@ -40,6 +40,7 @@
 #include "LegacyCDMSession.h"
 #endif
 
+using LayerHostingContextID = uint32_t;
 namespace WebCore {
 
 class MediaPlayerPrivateInterface {
@@ -70,7 +71,7 @@ public:
     
     virtual void prepareToPlay() { }
     virtual PlatformLayer* platformLayer() const { return nullptr; }
-
+    
 #if ENABLE(VIDEO_PRESENTATION_MODE)
     virtual RetainPtr<PlatformLayer> createVideoFullscreenLayer() { return nullptr; }
     virtual void setVideoFullscreenLayer(PlatformLayer*, Function<void()>&& completionHandler) { completionHandler(); }
@@ -340,6 +341,7 @@ public:
     virtual String errorMessage() const { return { }; }
 
     virtual void renderVideoWillBeDestroyed() { }
+    virtual LayerHostingContextID hostingContextID() const {return 0;}
 };
 
 }

@@ -107,7 +107,6 @@ private:
 
     void prepareToPlay() override;
     PlatformLayer* platformLayer() const override;
-    
     bool supportsPictureInPicture() const override;
     bool supportsFullscreen() const override { return true; }
 

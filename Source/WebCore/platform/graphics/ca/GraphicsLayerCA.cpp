@@ -400,6 +400,13 @@ Ref<PlatformCALayer> GraphicsLayerCA::createPlatformCALayer(Ref<WebCore::Model>,
 }
 #endif
 
+Ref<PlatformCALayer> GraphicsLayerCA::createPlatformCALayer(uint32_t, PlatformCALayerClient* owner, std::optional<WebCore::MediaPlayerIdentifier>, WebCore::FloatSize)
+{
+    // By default, just make a plain layer; subclasses can override to provide a custom PlatformCALayer for hosting context id.
+    return GraphicsLayerCA::createPlatformCALayer(PlatformCALayer::LayerTypeLayer, owner);
+}
+
+
 Ref<PlatformCAAnimation> GraphicsLayerCA::createPlatformCAAnimation(PlatformCAAnimation::AnimationType type, const String& keyPath)
 {
 #if PLATFORM(COCOA)
@@ -1330,6 +1337,18 @@ void GraphicsLayerCA::setContentsToPlatformLayer(PlatformLayer* platformLayer, C
         m_contentsLayer = nullptr;
 
     m_contentsLayerPurpose = platformLayer ? purpose : ContentsLayerPurpose::None;
+    m_contentsDisplayDelegate = nullptr;
+    noteSublayersChanged();
+    noteLayerPropertyChanged(ContentsPlatformLayerChanged);
+}
+
+void GraphicsLayerCA::setContentsToHostingContextID(uint32_t hostingContextID, ContentsLayerPurpose purpose, std::optional<WebCore::MediaPlayerIdentifier> playerID, WebCore::FloatSize naturalSize)
+{
+    if(!(hostingContextID == m_layerHostingContextID)) {
+        m_contentsLayer = createPlatformCALayer(hostingContextID, this, playerID, naturalSize);
+        m_layerHostingContextID = hostingContextID;
+    }
+    m_contentsLayerPurpose = hostingContextID ? purpose : ContentsLayerPurpose::None;
     m_contentsDisplayDelegate = nullptr;
     noteSublayersChanged();
     noteLayerPropertyChanged(ContentsPlatformLayerChanged);
@@ -2917,7 +2936,7 @@ void GraphicsLayerCA::updateContentsRects()
 {
     if (!m_contentsLayer && !m_contentsRectClipsDescendants)
         return;
-
+    
     auto contentBounds = FloatRect { { }, m_contentsRect.size() };
     
     bool gainedOrLostClippingLayer = false;

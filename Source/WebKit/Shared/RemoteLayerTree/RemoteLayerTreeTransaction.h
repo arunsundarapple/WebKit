@@ -37,6 +37,7 @@
 #include <WebCore/FloatSize.h>
 #include <WebCore/LayoutMilestone.h>
 #include <WebCore/Model.h>
+#include <WebCore/MediaPlayerIdentifier.h>
 #include <WebCore/PlatformCALayer.h>
 #include <WebCore/ScrollTypes.h>
 #include <WebCore/TransformationMatrix.h>
@@ -117,6 +118,8 @@ public:
 
         WebCore::GraphicsLayer::PlatformLayerID layerID;
         WebCore::PlatformCALayer::LayerType type;
+        std::optional<WebCore::MediaPlayerIdentifier> playerIdentifier;
+        std::optional<WebCore::FloatSize> naturalSize;
 
         uint32_t hostingContextID;
         float hostingDeviceScaleFactor;

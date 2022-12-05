@@ -30,6 +30,8 @@
 #include "PlatformCAAnimation.h"
 #include "PlatformCALayer.h"
 #include "PlatformCALayerClient.h"
+#include <WebCore/MediaPlayerIdentifier.h>
+#include <WebCore/FloatSize.h>
 #include <wtf/HashMap.h>
 #include <wtf/RetainPtr.h>
 #include <wtf/text/StringHash.h>
@@ -149,6 +151,7 @@ public:
     WEBCORE_EXPORT PlatformLayer* contentsLayerForMedia() const override;
 #endif
     WEBCORE_EXPORT void setContentsToPlatformLayer(PlatformLayer*, ContentsLayerPurpose) override;
+    WEBCORE_EXPORT void setContentsToHostingContextID(uint32_t, ContentsLayerPurpose, std::optional<WebCore::MediaPlayerIdentifier>, WebCore::FloatSize) override;
     WEBCORE_EXPORT void setContentsDisplayDelegate(RefPtr<GraphicsLayerContentsDisplayDelegate>&&, ContentsLayerPurpose) override;
 
     WEBCORE_EXPORT void setContentsToSolidColor(const Color&) override;
@@ -258,6 +261,7 @@ private:
 #if ENABLE(MODEL_ELEMENT)
     virtual Ref<PlatformCALayer> createPlatformCALayer(Ref<WebCore::Model>, PlatformCALayerClient* owner);
 #endif
+    virtual Ref<PlatformCALayer> createPlatformCALayer(uint32_t, PlatformCALayerClient* owner, std::optional<WebCore::MediaPlayerIdentifier>, WebCore::FloatSize);
     virtual Ref<PlatformCAAnimation> createPlatformCAAnimation(PlatformCAAnimation::AnimationType, const String& keyPath);
 
     PlatformCALayer* primaryLayer() const { return m_structuralLayer.get() ? m_structuralLayer.get() : m_layer.get(); }
@@ -672,6 +676,7 @@ private:
     bool m_hasEverPainted : 1;
     bool m_hasDescendantsWithRunningTransformAnimations : 1;
     bool m_hasDescendantsWithUncommittedChanges : 1;
+    uint32_t m_layerHostingContextID {0};
 };
 
 } // namespace WebCore

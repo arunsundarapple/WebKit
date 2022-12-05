@@ -59,7 +59,7 @@ OBJC_CLASS NSArray;
 #if USE(AVFOUNDATION)
 typedef struct __CVBuffer* CVPixelBufferRef;
 #endif
-
+using LayerHostingContextID = uint32_t;
 namespace WebCore {
 
 enum class AudioSessionCategory : uint8_t;
@@ -327,7 +327,6 @@ public:
     bool requiresImmediateCompositing() const;
     bool doesHaveAttribute(const AtomString&, AtomString* value = nullptr) const;
     PlatformLayer* platformLayer() const;
-
     void reloadAndResumePlaybackIfNeeded();
 
 #if ENABLE(VIDEO_PRESENTATION_MODE)
@@ -712,6 +711,7 @@ public:
     bool shouldDisableHDR() const { return client().mediaPlayerShouldDisableHDR(); }
 
     bool requiresRemotePlayback() const { return m_requiresRemotePlayback; }
+    LayerHostingContextID hostingContextID()  const;
 
 private:
     MediaPlayer(MediaPlayerClient&);

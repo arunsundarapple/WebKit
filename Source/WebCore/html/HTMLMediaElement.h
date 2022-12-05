@@ -43,6 +43,7 @@
 #include "TextTrackClient.h"
 #include "VideoTrackClient.h"
 #include "VisibilityChangeClient.h"
+#include <WebCore/FloatSize.h>
 #include <wtf/Function.h>
 #include <wtf/LoggerHelper.h>
 #include <wtf/Observer.h>
@@ -629,7 +630,8 @@ public:
 #endif
 
     bool hasSource() const { return hasCurrentSrc() || srcObject(); }
-
+    uint32_t layerHostingContextID() { return m_player->hostingContextID(); }
+    WebCore::FloatSize naturalSize() { return m_player->naturalSize(); }
     void updateMediaState();
 
 protected:

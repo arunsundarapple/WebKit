@@ -37,6 +37,7 @@
 #import <WebCore/Frame.h>
 #import <WebCore/FrameView.h>
 #import <WebCore/Page.h>
+#import <WebCore/MediaPlayerIdentifier.h>
 #import <wtf/SetForScope.h>
 #import <wtf/SystemTracing.h>
 
@@ -110,6 +111,19 @@ void RemoteLayerTreeContext::layerDidEnterContext(PlatformCALayerRemote& layer, 
     GraphicsLayer::PlatformLayerID layerID = layer.layerID();
 
     RemoteLayerTreeTransaction::LayerCreationProperties creationProperties;
+    layer.populateCreationProperties(creationProperties, *this, type);
+
+    m_createdLayers.add(layerID, WTFMove(creationProperties));
+    m_livePlatformLayers.add(layerID, &layer);
+}
+
+void RemoteLayerTreeContext::layerDidEnterContext(PlatformCALayerRemote& layer, PlatformCALayer::LayerType type, std::optional<WebCore::MediaPlayerIdentifier> playerID, WebCore::FloatSize naturalSize)
+{
+    GraphicsLayer::PlatformLayerID layerID = layer.layerID();
+
+    RemoteLayerTreeTransaction::LayerCreationProperties creationProperties;
+    creationProperties.playerIdentifier = playerID;
+    creationProperties.naturalSize = std::optional { naturalSize };
     layer.populateCreationProperties(creationProperties, *this, type);
 
     m_createdLayers.add(layerID, WTFMove(creationProperties));

@@ -67,6 +67,7 @@ std::unique_ptr<RemoteLayerTreeNode> RemoteLayerTreeHost::makeNode(const RemoteL
     case PlatformCALayer::LayerTypeTransformLayer:
         return makeWithView(adoptNS([[WKTransformView alloc] init]));
 
+    case PlatformCALayer::LayerTypeRemoteHostingTransportLayer:
     case PlatformCALayer::LayerTypeCustom:
     case PlatformCALayer::LayerTypeAVPlayerLayer:
         if (!m_isDebugLayerTreeHost) {

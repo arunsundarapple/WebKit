@@ -73,6 +73,11 @@ Ref<PlatformCALayerRemote> PlatformCALayerRemote::create(Ref<WebCore::Model> mod
 }
 #endif
 
+Ref<PlatformCALayerRemote> PlatformCALayerRemote::create(uint32_t contextID, WebCore::PlatformCALayerClient* owner, RemoteLayerTreeContext& context, std::optional<WebCore::MediaPlayerIdentifier> playerID, WebCore::FloatSize naturalSize)
+{
+    return PlatformCALayerRemoteCustom::create(contextID, owner, context, playerID, naturalSize);
+}
+
 Ref<PlatformCALayerRemote> PlatformCALayerRemote::create(const PlatformCALayerRemote& other, WebCore::PlatformCALayerClient* owner, RemoteLayerTreeContext& context)
 {
     auto layer = adoptRef(*new PlatformCALayerRemote(other, owner, context));
@@ -193,8 +198,8 @@ void PlatformCALayerRemote::recursiveBuildTransaction(RemoteLayerTreeContext& co
 
         if (isPlatformCALayerRemoteCustom()) {
             RemoteLayerTreePropertyApplier::applyPropertiesToLayer(platformLayer(), nullptr, m_properties, RemoteLayerBackingStore::LayerContentsType::CAMachPort);
-            didCommit();
-            return;
+            //didCommit();
+            //return;
         }
 
         transaction.layerPropertiesChanged(*this);

@@ -28,6 +28,7 @@
 #include "RemoteLayerTreeTransaction.h"
 #include <WebCore/PlatformCALayer.h>
 #include <WebCore/PlatformLayer.h>
+#include <WebCore/MediaPlayerIdentifier.h>
 
 namespace WebCore {
 class LayerPool;
@@ -44,6 +45,7 @@ public:
 #if ENABLE(MODEL_ELEMENT)
     static Ref<PlatformCALayerRemote> create(Ref<WebCore::Model>, WebCore::PlatformCALayerClient*, RemoteLayerTreeContext&);
 #endif
+    static Ref<PlatformCALayerRemote> create(uint32_t, WebCore::PlatformCALayerClient*, RemoteLayerTreeContext&, std::optional<WebCore::MediaPlayerIdentifier>, WebCore::FloatSize);
     static Ref<PlatformCALayerRemote> create(const PlatformCALayerRemote&, WebCore::PlatformCALayerClient*, RemoteLayerTreeContext&);
 
     virtual ~PlatformCALayerRemote();

@@ -1114,7 +1114,11 @@ bool RenderLayerBacking::updateConfiguration(const RenderLayer* compositingAnces
 #if ENABLE(VIDEO)
     else if (is<RenderVideo>(renderer()) && downcast<RenderVideo>(renderer()).shouldDisplayVideo()) {
         auto* mediaElement = downcast<HTMLMediaElement>(renderer().element());
-        m_graphicsLayer->setContentsToPlatformLayer(mediaElement->platformLayer(), GraphicsLayer::ContentsLayerPurpose::Media);
+        if (m_graphicsLayer->layerMode() == GraphicsLayer::LayerMode::PlatformLayer) {
+            m_graphicsLayer->setContentsToPlatformLayer(mediaElement->platformLayer(), GraphicsLayer::ContentsLayerPurpose::Media);
+        } else {
+            m_graphicsLayer->setContentsToHostingContextID(mediaElement->layerHostingContextID(), GraphicsLayer::ContentsLayerPurpose::Media, mediaElement->playerIdentifier(), mediaElement->naturalSize());
+        }
         updateContentsRects();
     }
 #endif

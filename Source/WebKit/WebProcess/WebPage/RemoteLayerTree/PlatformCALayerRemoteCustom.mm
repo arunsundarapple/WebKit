@@ -51,6 +51,18 @@ Ref<PlatformCALayerRemote> PlatformCALayerRemoteCustom::create(PlatformLayer *pl
     return WTFMove(layer);
 }
 
+Ref<PlatformCALayerRemote> PlatformCALayerRemoteCustom::create(uint32_t contextID, PlatformCALayerClient* owner, RemoteLayerTreeContext& context, std::optional<WebCore::MediaPlayerIdentifier> playerID, WebCore::FloatSize naturalSize)
+{
+    auto layer = adoptRef(*new PlatformCALayerRemoteCustom(contextID, owner, context, playerID));
+    context.layerDidEnterContext(layer.get(), layer->layerType(), playerID, naturalSize);
+    return WTFMove(layer);
+}
+PlatformCALayerRemoteCustom::PlatformCALayerRemoteCustom(uint32_t contextID, PlatformCALayerClient* owner, RemoteLayerTreeContext& context, std::optional<WebCore::MediaPlayerIdentifier> playerID)
+    : PlatformCALayerRemote(LayerTypeRemoteHostingTransportLayer, owner, context)
+{
+    m_layerHostingContext = LayerHostingContext::createTransportLayerForRemoteHosting(contextID);    
+}
+
 PlatformCALayerRemoteCustom::PlatformCALayerRemoteCustom(LayerType layerType, PlatformLayer * customLayer, PlatformCALayerClient* owner, RemoteLayerTreeContext& context)
     : PlatformCALayerRemote(layerType, owner, context)
 {
@@ -96,7 +108,7 @@ PlatformCALayerRemoteCustom::~PlatformCALayerRemoteCustom()
 
 uint32_t PlatformCALayerRemoteCustom::hostingContextID()
 {
-    return m_layerHostingContext->contextID();
+    return m_layerHostingContext->cachedContextID();
 }
 
 void PlatformCALayerRemoteCustom::populateCreationProperties(RemoteLayerTreeTransaction::LayerCreationProperties& properties, const RemoteLayerTreeContext& context, PlatformCALayer::LayerType type)
